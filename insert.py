@@ -2,6 +2,8 @@
 
 import sys
 import sqlite3
+from datetime import date
+from enum import Enum
 
 class Table(Enum):
     applications = 1
@@ -36,6 +38,9 @@ def main():
     conn = sqlite3.connect('applications.db')
     cursor = conn.cursor()
 
+    today = date.today()
+    date_str = f"\'{today.month}-{today.day}-{today.year}\'"
+
     match table:
         case 1:
             application(cursor)
@@ -49,5 +54,5 @@ def main():
             print("Invalid input")
             sys.exit(2)
 
-if __name__='__main__':
+if __name__=="__main__":
     main()
