@@ -54,7 +54,28 @@ def applications(cursor, date):
 
 
 def companies(cursor, date):
-    pass
+    company_name = input("Enter company name: ")
+    industry = input("Enter industry: ")
+    headquarters = input("Enter headquarters location: ")
+    size = input("Enter size (small, medium, large): ")
+    website = input("Enter website url: ")
+    careers_page = input("Enter careers page url: ")
+    contact_email = input("Enter contact email: ")
+    contact_person = input("Enter contact person name: ")
+    notes = input("Enter notes: ")
+    is_target_str = input("Is target? (y/n): ")
+    is_target = False
+    if is_target_str == "y":
+        is_target = True
+    last_updated = date
+
+    data = [ company_name, industry, headquarters, size, website, careers_page,
+            contact_email, contact_person, notes, is_target, last_updated ]
+    assert len(data) == 11, "Data invalid"
+
+    cursor.execute("""
+    INSERT INTO companies VALUES(?,?,?,?,?,?,?,?,?,?,?)
+    """, data)
 
 def contacts(cursor, date):
     pass
