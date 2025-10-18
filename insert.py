@@ -11,16 +11,55 @@ class Table(Enum):
     contacts = 3 
     events = 4
 
-def applications():
+def applications(cursor, date):
+    cursor.execute("SELECT count(*) FROM applications;")
+    app_id = int(cursor.fetchone()[0]) + 1
+    company_name = input("Enter company name: ")
+    position = input("Enter position title: ")
+    department = input("Enter department or team: ")
+    location = input("Enter location: ")
+    app_date = date 
+    salary = float(input("Enter salary (float): "))
+    status = "Applied"
+    status_date = date 
+    posting_url = input("Enter job posting url: ")
+    where_applied = input("Enter where applied: ")
+    resume = input("Enter resume version: ")
+    referral = input("Enter referral name: ")
+    if referral == "":
+        referral = None
+    interview_date = None 
+    follow_up_date = None 
+    offer_details = None 
+    notes = input("Enter notes: ")
+    if notes == "":
+        notes = None
+    last_updated = date 
+    start_date = input("Enter start date: ")
+    if start_date == "":
+        start_date = "06-01-2025"
+    end_date = input("Enter end date: ")
+    if end_date == "":
+        end_date = "08-01-2025"
+
+    data = [ app_id, company_name, position, department, location, app_date,
+            salary, status, start_date, posting_url, where_applied, resume,
+            referral, interview_date, follow_up_date, offer_details, notes,
+            last_updated, start_date, end_date ]
+    assert len(data) == 20, "Data invalid"
+
+    cursor.execute("""
+    INSERT INTO applications VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    """, data)
+
+
+def companies(cursor, date):
     pass
 
-def companies():
+def contacts(cursor, date):
     pass
 
-def contacts():
-    pass
-
-def events():
+def events(cursor, date):
     pass
 
 def main():
@@ -28,31 +67,33 @@ def main():
     print("2: companies")
     print("3: contacts")
     print("4: events")
-    table = input("Insert into which table? Enter:")
+    table = input("Insert into which table? Enter: ")
     try:
         table = int(table)
     except:
-        print("Invalid input")
+        print("Invalid input (must be integer)")
         sys.exit(1)
 
     conn = sqlite3.connect('applications.db')
     cursor = conn.cursor()
 
     today = date.today()
-    date_str = f"\'{today.month}-{today.day}-{today.year}\'"
+    date_str = f"{today.month}-{today.day}-{today.year}"
 
     match table:
-        case 1:
-            application(cursor)
-        case 2:
-            companies(cursor)
-        case 3:
-            contacts(cursor)
-        case 4:
-            events(cursor)
+        case Table.applications.value:
+            applications(cursor, date_str)
+        case Table.companies.value:
+            companies(cursor, date_str)
+        case Table.contacts.value:
+            contacts(cursor, date_str)
+        case Table.events.value:
+            events(cursor, date_str)
         case _:
-            print("Invalid input")
+            print("Invalid input (must be 1-4)")
             sys.exit(2)
+    
+    conn.commit()
 
 if __name__=="__main__":
     main()
