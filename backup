@@ -1,0 +1,3 @@
+#!/bin/bash 
+
+cp applications.db .applications.db.backup
