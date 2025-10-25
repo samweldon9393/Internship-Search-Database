@@ -18,18 +18,6 @@ The code is modular and intended for demonstration, teaching, or portfolio purpo
 
 ---
 
-## Repository Structure
-
-├─ schema.sql # SQL file containing CREATE TABLE statements
-├─ insert.py # Script for inserting new records
-├─ count.py # Script for quickly seeing how many applications are in the database 
-├─ visualize.py # Script for generating plots from query results
-├─ requirements.txt # Python dependencies
-└─ README.md # Project documentation
-
-
----
-
 ## Features
 
 - Simple, human-readable SQLite schema.
