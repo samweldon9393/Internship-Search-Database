@@ -17,10 +17,26 @@ def apps_over_time(conn):
     plt.ylabel("Number of Applications")
     plt.show()
 
+def apps_by_industry_and_status(conn):
+    df = pd.read_sql_query("""
+        SELECT c.industry, a.status, COUNT(*) as num_apps
+        FROM applications a 
+        JOIN companies c 
+            ON a.company_name = c.company_name 
+        GROUP BY c.industry, a.status;
+        """, conn)
+
+    p = df.pivot(index="industry", columns="status", values="num_apps")
+    sns.heatmap(p, annot=True)
+    plt.title("Applications by Industry and Status")
+    plt.show()
+
 def main():
     conn = sqlite3.connect("applications.db")
 
-    apps_over_time(conn)
+    #apps_over_time(conn)
+    apps_by_industry_and_status(conn)
+
 
 if __name__=='__main__':
     main()
