@@ -58,6 +58,10 @@ The code is modular and intended for demonstration, teaching, or portfolio purpo
    ```bash
    sqlite3 applications.db
 
-4. **Generate visualizations**
+4. **Update an applications' status**
+   ```bash
+   python update.py
+
+5. **Generate visualizations**
    ```bash
    python visualize.py
