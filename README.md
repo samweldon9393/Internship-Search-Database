@@ -43,7 +43,6 @@ The code is modular and intended for demonstration, teaching, or portfolio purpo
    ```bash
    pip install -r requirements.txt
 
-
 ## Usage
 
 1. **Initialize the database schema**
