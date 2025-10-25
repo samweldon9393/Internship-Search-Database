@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 
+import sys
 import sqlite3
 import pandas as pd 
 import matplotlib.pyplot as plt
 import seaborn as sns
+from enum import Enum
+
+class Vis(Enum):
+    apps_over_time = 1
+    apps_by_industry_and_status = 2
 
 def apps_over_time(conn):
     df = pd.read_sql_query("SELECT application_date, status FROM applications", conn)
@@ -34,8 +40,24 @@ def apps_by_industry_and_status(conn):
 def main():
     conn = sqlite3.connect("applications.db")
 
-    #apps_over_time(conn)
-    apps_by_industry_and_status(conn)
+
+    print("1: Applications Over Time")
+    print("2: Applications by Industry and Status Heat Map")
+    vis = input("Which visualization to view? Enter: ")
+    try:
+        vis = int(vis)
+    except:
+        print("Invalid input (must be integer)")
+        sys.exit(1)
+
+    match vis:
+        case Vis.apps_over_time.value:
+            apps_over_time(conn)
+        case Vis.apps_by_industry_and_status.value:
+            apps_by_industry_and_status(conn)
+        case _:
+            print("Invalid input (must be 1-2)")
+            sys.exit(2)
 
 
 if __name__=='__main__':
