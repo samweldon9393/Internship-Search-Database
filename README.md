@@ -1,10 +1,13 @@
-# Internship Search Database 
+# Job Search Database 
 
-This repo houses the code to interact with a little sqlite database I'm using 
-to keep track of information about my search for an internship for 2025. 
+This repo houses the code to interact with a sqlite database I'm using 
+to keep track of information about my search for an internship for summer 2025.
 Hopefully I will find something, and then the data I collected through the 
 process can be used to see what worked and what didn't, and maybe that will 
 allow me to pass on some good advice to others in the future!
+
+If any one else wants to use my system to keep track of your own job search,
+feel free to clone the repo!
 
 ---
 
