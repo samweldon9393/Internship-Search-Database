@@ -11,6 +11,7 @@ class Vis(Enum):
     apps_over_time = 1
     apps_by_industry_and_status = 2
     app_outcomes = 3
+    response_times = 4
 
 def apps_over_time(conn):
     df = pd.read_sql_query("SELECT application_date, status FROM applications", conn)
@@ -49,6 +50,22 @@ def app_outcomes(conn):
     plt.ylabel("Count")
     plt.show()
 
+def response_times(conn):
+    df = pd.read_sql_query("""
+        SELECT a.application_date, a.response_date, c.industry 
+        FROM applications a, companies c 
+        WHERE a.company_name = c.company_name;
+        """, conn)
+    df['application_date'] = pd.to_datetime(df['application_date'])
+    df['response_date'] = pd.to_datetime(df['response_date'])
+    df['response_time'] = (df['response_date'] - df['application_date']).dt.days
+
+    sns.boxplot(x='industry', y='response_time', data=df)
+    plt.title("Response Time by Industry")
+    plt.ylabel("Days from Application to Rejection")
+    plt.xticks(rotation=45)
+    plt.show()
+
 
 def main():
     conn = sqlite3.connect("applications.db")
@@ -57,6 +74,7 @@ def main():
     print("1: Applications Over Time")
     print("2: Applications by Industry and Status Heat Map")
     print("3: Application Outcomes")
+    print("4: Response Times")
     vis = input("Which visualization to view? Enter: ")
     try:
         vis = int(vis)
@@ -71,8 +89,10 @@ def main():
             apps_by_industry_and_status(conn)
         case Vis.app_outcomes.value:
             app_outcomes(conn)
+        case Vis.response_times.value:
+            response_times(conn)
         case _:
-            print("Invalid input (must be 1-3)")
+            print("Invalid input (must be 1-4)")
             sys.exit(2)
 
 
