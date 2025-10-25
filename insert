@@ -56,6 +56,8 @@ def applications(cursor, date):
 
 def companies(cursor, date):
     company_name = input("Enter company name: ")
+    if company_name == "":
+        print("Company name cannot be null")
     industry = input("Enter industry: ")
     headquarters = input("Enter headquarters location: ")
     size = input("Enter size (small, medium, large): ")
@@ -80,6 +82,9 @@ def companies(cursor, date):
 
 def contacts(cursor, date):
     contact_name = input("Enter contact name: ")
+    if contact_name == "":
+        print("Contact name cannot be null")
+        sys.exit(1)
     company_name = input("Enter company name: ")
     linkedin= input("Enter LinkedIn: ")
     email = input("Enter email: ")
@@ -105,7 +110,28 @@ def contacts(cursor, date):
 
 
 def events(cursor, date):
-    pass
+    cursor.execute("SELECT count(*) FROM events;")
+    event_id = int(cursor.fetchone()[0]) + 1
+
+    event_name = input("Enter event name: ")
+    if event_name == "":
+        print("Event name cannot be null")
+        sys.exit(1)
+
+    event_date = input("Enter event date (\'DD-MM-YYYY\' or t for today): ")
+    if event_date == "t":
+        event_date = date 
+
+    notes = input("Enter notes: ")
+    contact_person = input("Enter contact person name: ")
+    website = input("Enter event website url: ")
+
+    data = [ event_id, event_name, event_date, notes, contact_person, website ]
+    assert len(data) == 6, "Data invalid"
+
+    cursor.execute("""
+    INSERT INTO events VALUES(?,?,?,?,?,?)
+    """, data)
 
 def main():
     print("1: applications")
