@@ -63,4 +63,4 @@ The code is modular and intended for demonstration, teaching, or portfolio purpo
 
 5. **Generate visualizations**
    ```bash
-   python visualize.py
+   python vis.py
