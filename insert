@@ -79,7 +79,30 @@ def companies(cursor, date):
     """, data)
 
 def contacts(cursor, date):
-    pass
+    contact_name = input("Enter contact name: ")
+    company_name = input("Enter company name: ")
+    linkedin= input("Enter LinkedIn: ")
+    email = input("Enter email: ")
+    phone_number = input("Enter phone_number: ")
+    if phone_number != "":
+        try:
+            phone_number = int(phone_number)
+        except:
+            print("Invalid phone number")
+            sys.exit(1)
+    last_contacted = input("Enter last contacted date (\'DD-MM-YYYY\' or t for today): ")
+    if last_contacted == "t":
+        last_contacted = date 
+    where_met = input("Where did we meet?: ")
+
+    data = [ contact_name, company_name, linkedin, email, phone_number,
+            last_contacted, where_met ]
+    assert len(data) == 7, "Data invalid"
+
+    cursor.execute("""
+    INSERT INTO contacts VALUES(?,?,?,?,?,?,?)
+    """, data)
+
 
 def events(cursor, date):
     pass
