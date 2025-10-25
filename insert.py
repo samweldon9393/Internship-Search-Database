@@ -22,7 +22,7 @@ def applications(cursor, date):
     app_date = date 
     salary = float(input("Enter salary (float): "))
     status = "Applied"
-    status_date = date 
+    status_date = None 
     posting_url = input("Enter job posting url: ")
     where_applied = input("Enter where applied: ")
     resume = input("Enter resume version: ")
@@ -43,15 +43,16 @@ def applications(cursor, date):
     if end_date == "":
         end_date = "08-01-2025"
     job_board = input("Enter job board: ")
+    response_date = None
 
     data = [ app_id, company_name, position, department, location, app_date,
-            salary, status, start_date, posting_url, where_applied, resume,
+            salary, status, status_date, posting_url, where_applied, resume,
             referral, interview_date, follow_up_date, offer_details, notes,
-            last_updated, start_date, end_date, job_board ]
-    assert len(data) == 21, "Data invalid"
+            last_updated, start_date, end_date, job_board, response_date ]
+    assert len(data) == 22, "Data invalid"
 
     cursor.execute("""
-    INSERT INTO applications VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    INSERT INTO applications VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     """, data)
 
 
@@ -200,7 +201,7 @@ def main():
         case Table.event_companies.value:
             event_companies(cursor)
         case _:
-            print("Invalid input (must be 1-4)")
+            print("Invalid input (must be 1-5)")
             sys.exit(2)
     
     conn.commit()

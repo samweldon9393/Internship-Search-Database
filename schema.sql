@@ -30,7 +30,8 @@ CREATE TABLE applications(
     last_updated date default current_date,
     start_date date,
     end_date date,
-    job_board text
+    job_board text,
+    response_date date
 );
 CREATE TABLE contacts(
     contact_name text primary key,
