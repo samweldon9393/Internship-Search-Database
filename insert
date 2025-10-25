@@ -10,6 +10,7 @@ class Table(Enum):
     companies = 2
     contacts = 3 
     events = 4
+    event_companies = 5
 
 def applications(cursor, date):
     cursor.execute("SELECT count(*) FROM applications;")
@@ -133,11 +134,47 @@ def events(cursor, date):
     INSERT INTO events VALUES(?,?,?,?,?,?)
     """, data)
 
+def event_companies(cursor):
+    keyword = "%" + input("Keyword search on event name: ") + "%"
+    cursor.execute("SELECT event_id, event_name FROM events WHERE event_name LIKE ?", [keyword])
+
+    event_id = -1
+    for row in cursor:
+        print(f"Matches: {row[1]}")
+        response = input("Is this the event? (y/n): ")
+        if response == "y":
+            event_id = row[0]
+
+    if event_id == -1:
+        print("No match")
+        sys.exit(1)
+
+    print("Enter companies, they must be from this list: ")
+    cursor.execute("SELECT company_name FROM companies;")
+    companies_in_db = set([row[0] for row in cursor])
+    print(companies_in_db)
+
+    companies = []
+    company_name = ""
+    while company_name != "D":
+        company_name = input("Enter company name (D when done): ")
+        if company_name not in companies_in_db and company_name != "D":
+            print("Not in database")
+        else:
+            companies.append(company_name)
+
+    for company in companies:
+        values = [event_id, company]
+        cursor.execute("INSERT INTO event_companies VALUES (?, ?)",
+                       values)
+
+
 def main():
     print("1: applications")
     print("2: companies")
     print("3: contacts")
     print("4: events")
+    print("5: event_companies")
     table = input("Insert into which table? Enter: ")
     try:
         table = int(table)
@@ -160,6 +197,8 @@ def main():
             contacts(cursor, date_str)
         case Table.events.value:
             events(cursor, date_str)
+        case Table.event_companies.value:
+            event_companies(cursor)
         case _:
             print("Invalid input (must be 1-4)")
             sys.exit(2)
