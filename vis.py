@@ -10,6 +10,7 @@ from enum import Enum
 class Vis(Enum):
     apps_over_time = 1
     apps_by_industry_and_status = 2
+    app_outcomes = 3
 
 def apps_over_time(conn):
     df = pd.read_sql_query("SELECT application_date, status FROM applications", conn)
@@ -37,12 +38,25 @@ def apps_by_industry_and_status(conn):
     plt.title("Applications by Industry and Status")
     plt.show()
 
+def app_outcomes(conn):
+    df = pd.read_sql_query("""
+        SELECT status
+        FROM applications 
+        """, conn)
+    sns.countplot(x='status', data=df, order=df['status'].value_counts().index)
+    plt.title("Application Outcomes")
+    plt.xlabel("Status")
+    plt.ylabel("Count")
+    plt.show()
+
+
 def main():
     conn = sqlite3.connect("applications.db")
 
 
     print("1: Applications Over Time")
     print("2: Applications by Industry and Status Heat Map")
+    print("3: Application Outcomes")
     vis = input("Which visualization to view? Enter: ")
     try:
         vis = int(vis)
@@ -55,8 +69,10 @@ def main():
             apps_over_time(conn)
         case Vis.apps_by_industry_and_status.value:
             apps_by_industry_and_status(conn)
+        case Vis.app_outcomes.value:
+            app_outcomes(conn)
         case _:
-            print("Invalid input (must be 1-2)")
+            print("Invalid input (must be 1-3)")
             sys.exit(2)
 
 
