@@ -5,6 +5,7 @@ import sqlite3
 import pandas as pd 
 import matplotlib.pyplot as plt
 import seaborn as sns
+import networkx as nx
 from enum import Enum
 
 class Vis(Enum):
@@ -12,6 +13,8 @@ class Vis(Enum):
     apps_by_industry_and_status = 2
     app_outcomes = 3
     response_times = 4
+    contacts_per_company = 5
+    event_participation = 6
 
 def apps_over_time(conn):
     df = pd.read_sql_query("SELECT application_date, status FROM applications", conn)
@@ -66,6 +69,33 @@ def response_times(conn):
     plt.xticks(rotation=45)
     plt.show()
 
+def contacts_per_company(conn):
+    df = pd.read_sql_query("""
+        SELECT company_name, COUNT(*) AS contact_count
+        FROM contacts 
+        GROUP BY company_name;
+        """, conn)
+
+    sns.barplot(x='contact_count', y='company_name', data=df.sort_values('contact_count', ascending=False))
+    plt.title("Number of Contacts per Company")
+    plt.xlabel("Number of Contacts")
+    plt.ylabel("Company")
+    plt.show()
+
+def event_participation(conn):
+    df = pd.read_sql_query("""
+        SELECT c.company_name, e.event_name
+        FROM companies c, events e, event_companies ec 
+        WHERE e.event_id = ec.event_id 
+        AND c.company_name = ec.company_name;
+        """, conn)
+
+    print(df)
+    G = nx.from_pandas_edgelist(df, 'Event_name', 'company_name')
+    nx.draw(G, with_labels=True, node_color='lightblue')
+    plt.title("Event–Company Connections")
+    plt.show()
+
 
 def main():
     conn = sqlite3.connect("applications.db")
@@ -75,6 +105,8 @@ def main():
     print("2: Applications by Industry and Status Heat Map")
     print("3: Application Outcomes")
     print("4: Response Times")
+    print("5: Contacts per Company")
+    print("6: Event Participation")
     vis = input("Which visualization to view? Enter: ")
     try:
         vis = int(vis)
@@ -91,6 +123,10 @@ def main():
             app_outcomes(conn)
         case Vis.response_times.value:
             response_times(conn)
+        case Vis.contacts_per_company.value:
+            contacts_per_company(conn)
+        case Vis.event_participation.value:
+            event_participation(conn)
         case _:
             print("Invalid input (must be 1-4)")
             sys.exit(2)
