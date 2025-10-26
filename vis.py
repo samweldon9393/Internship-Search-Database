@@ -15,6 +15,7 @@ class Vis(Enum):
     response_times = 4
     contacts_per_company = 5
     event_participation = 6
+    network = 7
 
 def apps_over_time(conn):
     df = pd.read_sql_query("SELECT application_date, status FROM applications", conn)
@@ -82,6 +83,18 @@ def contacts_per_company(conn):
     plt.ylabel("Company")
     plt.show()
 
+def network(conn):
+    df = pd.read_sql_query("""
+        SELECT c.company_name, n.contact_name
+        FROM companies c, contacts n 
+        WHERE c.company_name = n.company_name;
+        """, conn)
+
+    G = nx.from_pandas_edgelist(df, 'contact_name', 'company_name')
+    nx.draw(G, with_labels=True, node_color='lightblue')
+    plt.title("Network")
+    plt.show()
+
 def event_participation(conn):
     df = pd.read_sql_query("""
         SELECT c.company_name, e.event_name
@@ -90,7 +103,6 @@ def event_participation(conn):
         AND c.company_name = ec.company_name;
         """, conn)
 
-    print(df)
     G = nx.from_pandas_edgelist(df, 'Event_name', 'company_name')
     nx.draw(G, with_labels=True, node_color='lightblue')
     plt.title("Event–Company Connections")
@@ -107,6 +119,7 @@ def main():
     print("4: Response Times")
     print("5: Contacts per Company")
     print("6: Event Participation")
+    print("7: Network")
     vis = input("Which visualization to view? Enter: ")
     try:
         vis = int(vis)
@@ -127,6 +140,8 @@ def main():
             contacts_per_company(conn)
         case Vis.event_participation.value:
             event_participation(conn)
+        case Vis.network.value:
+            network(conn)
         case _:
             print("Invalid input (must be 1-4)")
             sys.exit(2)
