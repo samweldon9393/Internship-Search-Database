@@ -16,6 +16,7 @@ class Vis(Enum):
     contacts_per_company = 5
     event_participation = 6
     network = 7
+    industry_salaries = 8
 
 def apps_over_time(conn):
     df = pd.read_sql_query("SELECT application_date, status FROM applications", conn)
@@ -108,6 +109,18 @@ def event_participation(conn):
     plt.title("Event–Company Connections")
     plt.show()
 
+def industry_salaries(conn):
+    df = pd.read_sql_query("""
+        SELECT c.industry, a.salary 
+        FROM companies c, applications a 
+        WHERE c.company_name = a.company_name;
+        """, conn)
+
+    sns.boxplot(x='industry', y='salary', data=df)
+    plt.title("Salary Distribution by Industry")
+    plt.xticks(rotation=45)
+    plt.show()
+
 
 def main():
     conn = sqlite3.connect("applications.db")
@@ -120,6 +133,7 @@ def main():
     print("5: Contacts per Company")
     print("6: Event Participation")
     print("7: Network")
+    print("8: Industry Salaries")
     vis = input("Which visualization to view? Enter: ")
     try:
         vis = int(vis)
@@ -142,6 +156,8 @@ def main():
             event_participation(conn)
         case Vis.network.value:
             network(conn)
+        case Vis.industry_salaries.value:
+            industry_salaries(conn)
         case _:
             print("Invalid input (must be 1-4)")
             sys.exit(2)
