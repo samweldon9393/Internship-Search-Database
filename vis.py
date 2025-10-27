@@ -9,6 +9,7 @@ import networkx as nx
 from enum import Enum
 
 class Vis(Enum):
+    exit_program = 0
     apps_over_time = 1
     apps_by_industry_and_status = 2
     app_outcomes = 3
@@ -150,35 +151,41 @@ def main():
     print("7: Network")
     print("8: Industry Salaries")
     print("9: Activity Heatmap")
-    vis = input("Which visualization to view? Enter: ")
-    try:
-        vis = int(vis)
-    except:
-        print("Invalid input (must be integer)")
-        sys.exit(1)
 
-    match vis:
-        case Vis.apps_over_time.value:
-            apps_over_time(conn)
-        case Vis.apps_by_industry_and_status.value:
-            apps_by_industry_and_status(conn)
-        case Vis.app_outcomes.value:
-            app_outcomes(conn)
-        case Vis.response_times.value:
-            response_times(conn)
-        case Vis.contacts_per_company.value:
-            contacts_per_company(conn)
-        case Vis.event_participation.value:
-            event_participation(conn)
-        case Vis.network.value:
-            network(conn)
-        case Vis.industry_salaries.value:
-            industry_salaries(conn)
-        case Vis.activity_heatmap.value:
-            activity_heatmap(conn)
-        case _:
-            print("Invalid input (must be 1-4)")
-            sys.exit(2)
+    vis = ""
+    while vis != "D":
+        vis = input("Which visualization to view? Enter number or 0 when done: ")
+        try:
+            vis = int(vis)
+        except:
+            print("Invalid input (must be integer)")
+            sys.exit(1)
+
+        match vis:
+            case Vis.exit_program.value:
+                print("Good luck!")
+                break
+            case Vis.apps_over_time.value:
+                apps_over_time(conn)
+            case Vis.apps_by_industry_and_status.value:
+                apps_by_industry_and_status(conn)
+            case Vis.app_outcomes.value:
+                app_outcomes(conn)
+            case Vis.response_times.value:
+                response_times(conn)
+            case Vis.contacts_per_company.value:
+                contacts_per_company(conn)
+            case Vis.event_participation.value:
+                event_participation(conn)
+            case Vis.network.value:
+                network(conn)
+            case Vis.industry_salaries.value:
+                industry_salaries(conn)
+            case Vis.activity_heatmap.value:
+                activity_heatmap(conn)
+            case _:
+                print("Invalid input (must be 1-4)")
+                sys.exit(2)
 
 
 if __name__=='__main__':
