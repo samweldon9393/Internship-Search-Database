@@ -163,7 +163,7 @@ def event_companies(cursor):
         company_name = input("Enter company name (D when done): ")
         if company_name not in companies_in_db and company_name != "D":
             print("Not in database")
-        else:
+        elif company_name != "D":
             companies.append(company_name)
 
     for company in companies:
