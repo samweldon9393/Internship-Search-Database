@@ -48,7 +48,8 @@ CREATE TABLE events (
     event_date DATE,
     notes TEXT,
     contact_person TEXT,
-    event_website TEXT
+    event_website TEXT,
+    location TEXT
 );
 CREATE TABLE event_companies(
     event_id INTEGER NOT NULL,
