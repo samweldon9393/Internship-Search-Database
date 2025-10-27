@@ -127,12 +127,14 @@ def events(cursor, date):
     notes = input("Enter notes: ")
     contact_person = input("Enter contact person name: ")
     website = input("Enter event website url: ")
+    location = input("Enter event location: ")
 
-    data = [ event_id, event_name, event_date, notes, contact_person, website ]
-    assert len(data) == 6, "Data invalid"
+    data = [ event_id, event_name, event_date, notes, contact_person,
+            website, location ]
+    assert len(data) == 7, "Data invalid"
 
     cursor.execute("""
-    INSERT INTO events VALUES(?,?,?,?,?,?)
+    INSERT INTO events VALUES(?,?,?,?,?,?,?)
     """, data)
 
 def event_companies(cursor):
