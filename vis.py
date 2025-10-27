@@ -17,6 +17,7 @@ class Vis(Enum):
     event_participation = 6
     network = 7
     industry_salaries = 8
+    activity_heatmap = 9
 
 def apps_over_time(conn):
     df = pd.read_sql_query("SELECT application_date, status FROM applications", conn)
@@ -121,6 +122,20 @@ def industry_salaries(conn):
     plt.xticks(rotation=45)
     plt.show()
 
+def activity_heatmap(conn):
+    df = pd.read_sql_query("""
+        SELECT application_date 
+        FROM applications;
+        """, conn)
+
+    df['application_date'] = pd.to_datetime(df['application_date'])
+    df['weekday'] = df['application_date'].dt.day_name()
+    df['week'] = df['application_date'].dt.isocalendar().week
+    heat = df.groupby(['week', 'weekday']).size().unstack(fill_value=0)
+    sns.heatmap(heat, cmap="Blues")
+    plt.title("Applications by Week and Weekday")
+    plt.show()
+
 
 def main():
     conn = sqlite3.connect("applications.db")
@@ -134,6 +149,7 @@ def main():
     print("6: Event Participation")
     print("7: Network")
     print("8: Industry Salaries")
+    print("9: Activity Heatmap")
     vis = input("Which visualization to view? Enter: ")
     try:
         vis = int(vis)
@@ -158,6 +174,8 @@ def main():
             network(conn)
         case Vis.industry_salaries.value:
             industry_salaries(conn)
+        case Vis.activity_heatmap.value:
+            activity_heatmap(conn)
         case _:
             print("Invalid input (must be 1-4)")
             sys.exit(2)
