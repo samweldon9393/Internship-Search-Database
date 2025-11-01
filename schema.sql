@@ -3,7 +3,6 @@ CREATE TABLE companies(
     industry text, headquarters text,
     size text, website text,
     careers_page text,
-    contact_email text,
     contact_person text,
     notes text,
     is_target boolean,

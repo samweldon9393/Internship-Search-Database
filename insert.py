@@ -65,7 +65,6 @@ def companies(cursor, date):
     size = input("Enter size (small, medium, large): ")
     website = input("Enter website url: ")
     careers_page = input("Enter careers page url: ")
-    contact_email = input("Enter contact email: ")
     contact_person = input("Enter contact person name: ")
     notes = input("Enter notes: ")
     is_target_str = input("Is target? (y/n): ")
@@ -75,11 +74,11 @@ def companies(cursor, date):
     last_updated = date
 
     data = [ company_name, industry, headquarters, size, website, careers_page,
-            contact_email, contact_person, notes, is_target, last_updated ]
-    assert len(data) == 11, "Data invalid"
+            contact_person, notes, is_target, last_updated ]
+    assert len(data) == 10, "Data invalid"
 
     cursor.execute("""
-    INSERT INTO companies VALUES(?,?,?,?,?,?,?,?,?,?,?)
+    INSERT INTO companies VALUES(?,?,?,?,?,?,?,?,?,?)
     """, data)
 
 def contacts(cursor, date):
