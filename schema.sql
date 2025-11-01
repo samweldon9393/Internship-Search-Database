@@ -25,7 +25,6 @@ CREATE TABLE applications(
     interview_date date,
     follow_up_date date,
     offer_details text,
-    notes text,
     last_updated date default current_date,
     start_date date,
     end_date date,
@@ -56,4 +55,12 @@ CREATE TABLE event_companies(
     FOREIGN KEY (event_id) REFERENCES events(event_id),
     FOREIGN KEY (company_name) REFERENCES companies(company_name),
     PRIMARY KEY (event_id, company_name)
+);
+CREATE TABLE company_notes(
+    company_name TEXT NOT NULL,
+    note_id INTEGER NOT NULL,
+    note text NOT NULL,
+    timestamp DATE NOT NULL,
+    FOREIGN KEY (company_name) REFERENCES companies(company_name),
+    PRIMARY KEY (company_name, note_id)
 );

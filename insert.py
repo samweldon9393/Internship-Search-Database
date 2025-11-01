@@ -11,6 +11,7 @@ class Table(Enum):
     contacts = 3 
     events = 4
     event_companies = 5
+    company_notes = 6
 
 def applications(cursor, date):
     cursor.execute("SELECT count(*) FROM applications;")
@@ -32,9 +33,6 @@ def applications(cursor, date):
     interview_date = None 
     follow_up_date = None 
     offer_details = None 
-    notes = input("Enter notes: ")
-    if notes == "":
-        notes = None
     last_updated = date 
     start_date = input("Enter start date: ")
     if start_date == "":
@@ -47,12 +45,12 @@ def applications(cursor, date):
 
     data = [ app_id, company_name, position, department, location, app_date,
             salary, status, status_date, posting_url, where_applied, resume,
-            referral, interview_date, follow_up_date, offer_details, notes,
+            referral, interview_date, follow_up_date, offer_details, 
             last_updated, start_date, end_date, job_board, response_date ]
-    assert len(data) == 22, "Data invalid"
+    assert len(data) == 21, "Data invalid"
 
     cursor.execute("""
-    INSERT INTO applications VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    INSERT INTO applications VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     """, data)
 
 
@@ -171,12 +169,56 @@ def event_companies(cursor):
                        values)
 
 
+def company_notes(cursor, date):
+    print("Enter company, it must be from this list: ")
+    cursor.execute("SELECT company_name FROM companies;")
+    companies_in_db = set(row[0] for row in cursor)
+    print(companies_in_db)
+
+    company_name = ""
+    while True:
+        company_name = input("Enter company name: ")
+        if company_name not in companies_in_db and company_name != "D":
+            print("Not in database")
+        else: break
+
+
+    data = [company_name]
+    app_id = None
+    cursor.execute("SELECT * FROM applications WHERE company_name= ?", data)
+    
+    if cursor:
+        for row in cursor:
+            print(row)
+            is_app = input("Is this the associated application? (y/n)")
+            if is_app == "y":
+                app_id = row[0]
+
+
+    note = input("Enter note: ")
+    if note == "":
+        note = None
+    cursor.execute("SELECT count(*) FROM company_notes WHERE company_name= ?", data)
+    
+    if cursor:
+        note_id = int(cursor.fetchone()[0]) + 1
+    else:
+        note_id = 1
+
+    data = [ company_name, note_id, app_id, note, date ]
+    assert len(data) == 5, "Data invalid"
+
+    cursor.execute("""
+    INSERT INTO company_notes VALUES(?,?,?,?,?)
+    """, data)
+
 def main():
     print("1: applications")
     print("2: companies")
     print("3: contacts")
     print("4: events")
     print("5: event_companies")
+    print("6: company_notes")
     table = input("Insert into which table? Enter: ")
     try:
         table = int(table)
@@ -201,8 +243,10 @@ def main():
             events(cursor, date_str)
         case Table.event_companies.value:
             event_companies(cursor)
+        case Table.company_notes.value:
+            company_notes(cursor, date_str)
         case _:
-            print("Invalid input (must be 1-5)")
+            print("Invalid input (must be 1-6)")
             sys.exit(2)
     
     conn.commit()
