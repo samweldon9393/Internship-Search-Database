@@ -34,12 +34,16 @@ def applications(cursor, date):
     follow_up_date = None 
     offer_details = None 
     last_updated = date 
-    start_date = input("Enter start date: ")
+    start_date = input("Enter start date (or D for default, or nothing for null): ")
     if start_date == "":
-        start_date = "06-01-2025"
-    end_date = input("Enter end date: ")
+        start_date = None
+    if start_date == "D":
+        start_date = '06-01-2025'
+    end_date = input("Enter end date (or D for default, or nothing for null): ")
     if end_date == "":
-        end_date = "08-01-2025"
+        end_date = None
+    if end_date == "D":
+        end_date = '08-01-2025'
     job_board = input("Enter job board: ")
     response_date = None
 
