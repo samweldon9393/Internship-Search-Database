@@ -38,12 +38,12 @@ def applications(cursor, date):
     if start_date == "":
         start_date = None
     if start_date == "D":
-        start_date = '06-01-2025'
+        start_date = '06-01-2026'
     end_date = input("Enter end date (or D for default, or nothing for null): ")
     if end_date == "":
         end_date = None
     if end_date == "D":
-        end_date = '08-01-2025'
+        end_date = '08-01-2026'
     job_board = input("Enter job board: ")
     response_date = None
 
