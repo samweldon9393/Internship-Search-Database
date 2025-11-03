@@ -6,13 +6,18 @@ from datetime import date
 
 
 def main():
-    if len(sys.argv) != 3:
+    if len(sys.argv) < 3:
         print("Usage: ./update <company_name> <status>")
         sys.exit(1)
 
-    company = sys.argv[1]
-    status = sys.argv[2]
-    
+    company_list = sys.argv[1:len(sys.argv)-1]
+    status = sys.argv[-1]
+
+    company = "%"
+    for c in company_list:
+        company += c 
+        company += "%"
+
     today = date.today()
     date_str = f"{today.month}-{today.day}-{today.year}"
 
@@ -20,31 +25,33 @@ def main():
     cursor = conn.cursor()
 
     cmpy = [company]
+    print(cmpy)
     cursor.execute("""
-    SELECT count(*) FROM applications WHERE company_name = ?
+    SELECT count(*) FROM applications WHERE company_name like ?
     """, cmpy)
     count = int(cursor.fetchone()[0])
 
     if count == 1:
         data = [status, company]
         cursor.execute("""
-        UPDATE applications SET status = ? WHERE company_name = ?
+        UPDATE applications SET status = ? WHERE company_name like ?
         """, data)
 
         data[0] = date_str
         cursor.execute("""
-        UPDATE applications SET status_date = ? WHERE company_name = ?
+        UPDATE applications SET status_date = ? WHERE company_name like ?
         """, data)
 
     else:
         cursor.execute("""
         SELECT application_id, company_name, position_title, department_or_team
         FROM applications 
-        WHERE company_name = ?
+        WHERE company_name like ?
         """, cmpy)
 
         rows = cursor.fetchall()
 
+        app_id = 0
         for i in rows:
             is_job = input(f"{i}\nIs this the role you want to update? (y/n): ")
             if is_job == 'y':
@@ -58,7 +65,7 @@ def main():
 
         data[0] = date_str
         cursor.execute("""
-        UPDATE applications SET status_date = ? WHERE company_name = ?
+        UPDATE applications SET status_date = ? WHERE company_name like ?
         """, data)
 
     conn.commit()
