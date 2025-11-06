@@ -68,7 +68,25 @@ def main():
         UPDATE applications SET status_date = ? WHERE company_name like ?
         """, data)
 
+    resp_date(cursor, company, date_str)
+
     conn.commit()
+
+def resp_date(cursor, company, date_str):
+    data = [company]
+    cursor.execute("""
+    SELECT 1 FROM applications WHERE company_name LIKE ? AND response_date is not null
+    """, data)
+
+    if cursor:
+        row = cursor.fetchone()
+        if not row:
+            data = [date_str, company]
+            cursor.execute("""
+            UPDATE applications SET response_date = ? WHERE company_name like ?
+            """, data)
+
+
 
 if __name__=="__main__":
     main()
