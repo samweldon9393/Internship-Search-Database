@@ -2,16 +2,36 @@
 
 import sys
 import sqlite3
+import getopt
 from datetime import date
 
+def usage(errno):
+    print("Usage: ./update -c \"<company_name>\" -s \"<status>\"")
+    sys.exit(errno)
 
 def main():
-    if len(sys.argv) < 3:
-        print("Usage: ./update <company_name> <status>")
-        sys.exit(1)
 
-    company_list = sys.argv[1:len(sys.argv)-1]
-    status = sys.argv[-1]
+    if len(sys.argv) < 2:
+        usage(1)
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hc:s:")
+    except getopt.GetoptError as err:
+        print(err)
+        usage(2)
+
+    company_list = None
+    status       = None
+    for o, a in opts:
+        if o == "-h":
+            usage(0)
+        elif o == "-c":
+            company_list = a 
+        elif o == "-s":
+            status = a
+        else:
+            assert False, "unhandled option"
+
 
     company = "%"
     for c in company_list:
