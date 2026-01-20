@@ -45,12 +45,14 @@ def main():
     cursor = conn.cursor()
 
     cmpy = [company]
-    print(cmpy)
     cursor.execute("""
     SELECT count(*) FROM applications WHERE company_name like ?
     """, cmpy)
     count = int(cursor.fetchone()[0])
 
+    if count == 0:
+        print("Company name not recognized")
+        sys.exit(3)
     if count == 1:
         data = [status, company]
         cursor.execute("""
@@ -88,6 +90,7 @@ def main():
         UPDATE applications SET status_date = ? WHERE company_name like ?
         """, data)
 
+    print(cmpy)
     resp_date(cursor, company, date_str)
 
     conn.commit()
